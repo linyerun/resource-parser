@@ -13,18 +13,40 @@ import (
 	"github.com/linyerun/resource-parser/common"
 )
 
-type parser struct {
+type videoParser struct {
 }
 
-func New() common.VideoParser {
-	return &parser{}
+func NewVideoParser() common.VideoParser {
+	return &videoParser{}
 }
 
-func (p *parser) Parse(arg string) (resourceInfo *common.VideoInfo, err error) {
+func (p *videoParser) Parse(arg string) (resourceInfo *common.VideoInfo, err error) {
 	return nil, nil
 }
 
-func (p *parser) parseVideoById(videoId string) (videoInfo *common.VideoInfo, err error) {
+func (p *videoParser) parseVideoByPageUrl(pageUrl string) (resourceInfo *common.VideoInfo, err error) {
+	if len(pageUrl) <= 0 {
+		return nil, errors.New("page url is empty")
+	}
+
+	pagePath := strings.TrimPrefix(pageUrl, "https://")
+	pagePath = strings.TrimPrefix(pageUrl, "http://")
+	pagePath = strings.Trim(pagePath, "/") // 去除末尾的/
+
+	urlPathParts := strings.Split(pageUrl, "/")
+
+	if len(urlPathParts) == 0 {
+		return nil, errors.New("get video id from page url fail")
+	}
+
+	videoId := urlPathParts[len(urlPathParts)-1]
+	_ = videoId
+
+	return nil, nil
+}
+
+// parseVideoById 通过视频ID获取视频信息
+func (p *videoParser) parseVideoById(videoId string) (videoInfo *common.VideoInfo, err error) {
 	// 发送请求获取视频信息的响应
 	client := resty.New()
 	reqURL := generateVideoReqURLById(videoId)
@@ -84,6 +106,7 @@ func (p *parser) parseVideoById(videoId string) (videoInfo *common.VideoInfo, er
 		MusicUrl:  "",
 		CoverUrl:  data.Get("video.cover.url_list.0").String(),
 		ImageURLs: images,
+		Author:    new(common.AuthorInfo),
 	}
 	videoInfo.Author.Uid = data.Get("author.sec_uid").String()
 	videoInfo.Author.Name = data.Get("author.nickname").String()
@@ -97,7 +120,13 @@ func (p *parser) parseVideoById(videoId string) (videoInfo *common.VideoInfo, er
 	return videoInfo, nil
 }
 
-func (p *parser) getRedirectUrl(videoInfo *common.VideoInfo) {
+// parseVideoByShareUrl 通过分享链接获取视频信息
+func (p *videoParser) parseVideoByShareUrl(shareUrl string) (videoInfo *common.VideoInfo, err error) {
+	return nil, nil
+}
+
+// getRedirectUrl 获取视频302重定向之后的地址
+func (p *videoParser) getRedirectUrl(videoInfo *common.VideoInfo) {
 	client := resty.New()
 	client.SetRedirectPolicy(resty.NoRedirectPolicy())
 	res, _ := client.R().
