@@ -28,9 +28,9 @@ func (p *videoParser) getVideoInfoByShareUrl(shareUrl *url.URL) (videoInfo *comm
 		return nil, err
 	}
 
-	// todo 跳转到西瓜视频了, 后面使用西瓜视频来处理
+	// 跳转到西瓜视频了, 使用西瓜视频解析器来处理
 	if strings.Contains(pageUrl.Host, "ixigua.com") {
-		return
+		return p.xiguaVideoParser.Parse(pageUrl)
 	}
 
 	return p.getVideoInfoByPageUrl(pageUrl)

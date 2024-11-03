@@ -7,15 +7,18 @@ import (
 	"go.uber.org/zap"
 
 	"github.com/linyerun/resource-parser/common"
+	"github.com/linyerun/resource-parser/xigua"
 )
 
 type videoParser struct {
-	logger *zap.Logger
+	logger           *zap.Logger
+	xiguaVideoParser common.IVideoParser
 }
 
 func NewVideoParser(logger *zap.Logger) common.IVideoParser {
 	return &videoParser{
-		logger: logger,
+		logger:           logger,
+		xiguaVideoParser: xigua.NewVideoParser(logger),
 	}
 }
 
