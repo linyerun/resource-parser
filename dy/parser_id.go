@@ -25,9 +25,11 @@ func (p *videoParser) getVideoInfoByPageUrl(pageUrl *url.URL) (videoInfo *common
 		len(pathParams) != 0 && len(pathParams[len(pathParams)-1]) != 0 {
 		videoId = pathParams[len(pathParams)-1]
 		p.logger.Debug("parser video id from pageUrl success", zap.String("videoId", videoId))
-	} else {
-		p.logger.Error("can not parse video id", zap.String("pageUrl", pageUrl.String()))
-		return nil, errors.New("parse video id fail")
+	}
+
+	if len(videoId) == 0 {
+		p.logger.Error("can not get video id", zap.String("pageUrl", pageUrl.String()))
+		return nil, errors.New("get video id fail")
 	}
 
 	// 校验videoId是否合法

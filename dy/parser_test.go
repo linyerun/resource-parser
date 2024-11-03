@@ -2,7 +2,6 @@ package dy
 
 import (
 	"fmt"
-	"log"
 	"net/url"
 	"testing"
 
@@ -13,42 +12,31 @@ import (
 
 // https://www.douyin.com/discover?modal_id=7421873649080093963
 // https://www.douyin.com/video/7418951980405722419?modeFrom=
-
-type MyLogger struct {
-}
-
-func (m MyLogger) Debug(msg string, args ...any) {
-	log.Println("[debug]"+msg, args)
-}
-
-func (m MyLogger) Info(msg string, args ...any) {
-	log.Println("[info]"+msg, args)
-}
-
-func (m MyLogger) Warn(msg string, args ...any) {
-	log.Println("[warn]"+msg, args)
-}
-
-func (m MyLogger) Error(msg string, args ...any) {
-	log.Println("[error]"+msg, args)
-}
+// https://www.douyin.com/search/%E5%9B%BE%E6%96%87?aid=8cebfbab-a444-4163-846d-b186a34bd1df&modal_id=7306487778492058889&type=general
 
 func TestNewVideoParser(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	parser := NewVideoParser(logger)
 	parserProxy := common.NewParserProxy(parser, logger)
-	resp, err := parserProxy.Parse("https://www.douyin.com/video/7418951980405722419?modeFrom=")
+
+	resp, err := parserProxy.Parse("https://www.douyin.com/search/%E5%9B%BE%E6%96%87?aid=8cebfbab-a444-4163-846d-b186a34bd1df&modal_id=7306487778492058889&type=general")
 	if err != nil {
-		log.Fatal(err)
+		t.Fatal(err)
 	}
-	logger.Info("resp01 data", zap.Any("resp01", resp))
+	logger.Info("resp", zap.Any("resp", resp))
+
+	resp, err = parserProxy.Parse("https://www.douyin.com/video/7418951980405722419?modeFrom=")
+	if err != nil {
+		t.Fatal(err)
+	}
+	logger.Info("resp data", zap.Any("resp01", resp))
 
 	arg := `4.33 o@q.Rk Btr:/ 04/10 勇闯非洲最大垃圾城，遭遇恶霸拦路，难怪当地人都不敢来# 非洲小钟 # vlog十亿流量扶持计划 # 埃及  https://v.douyin.com/iSwqYEsa/ 复制此链接，打开Dou音搜索，直接观看视频！`
 	resp, err = parserProxy.Parse(arg)
 	if err != nil {
-		log.Fatal(err)
+		t.Fatal(err)
 	}
-	logger.Info("resp02 data", zap.Any("resp01", resp))
+	logger.Info("resp data", zap.Any("resp02", resp))
 }
 
 func TestGetVideoInfoByPageUrl(t *testing.T) {

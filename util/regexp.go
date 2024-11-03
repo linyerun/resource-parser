@@ -6,7 +6,9 @@ import (
 )
 
 func RegexpMatchUrlFromString(str string) (string, error) {
-	urlReg, err := regexp.Compile(`https?://[\w.-]+[\w/-]*[\w.-:]*\??[\w=&:\-+%.]*/*`)
+	//urlReg, err := regexp.Compile(`https?://[\w.-]+[\w/-]*[\w.-:]*\??[\w=&:\-+%.]*/*`)
+	pattern := `https://[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(/[^?\s]*)?(\?[^\s]*)?`
+	urlReg, err := regexp.Compile(pattern)
 	if err != nil {
 		return "", fmt.Errorf("match url regexp compile error: %s", err.Error())
 	}
