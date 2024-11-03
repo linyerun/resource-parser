@@ -17,7 +17,7 @@ import (
 func TestNewVideoParser(t *testing.T) {
 	logger, _ := zap.NewDevelopment()
 	parser := NewVideoParser(logger)
-	parserProxy := common.NewParserProxy(parser, logger)
+	parserProxy := common.NewParserProxy(logger, parser)
 
 	resp, err := parserProxy.Parse("https://www.douyin.com/search/%E5%9B%BE%E6%96%87?aid=8cebfbab-a444-4163-846d-b186a34bd1df&modal_id=7306487778492058889&type=general")
 	if err != nil {

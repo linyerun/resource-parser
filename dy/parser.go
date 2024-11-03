@@ -19,7 +19,7 @@ func NewVideoParser(logger *zap.Logger) common.IVideoParser {
 	}
 }
 
-func (p *videoParser) Parse(videoUrl *url.URL) (resourceInfo *common.VideoInfo, err error) {
+func (p *videoParser) Parse(videoUrl *url.URL) (resp *common.VideoInfo, err error) {
 	switch videoUrl.Host {
 	case "www.iesdouyin.com", "www.douyin.com": // 可以解析出videoId
 		return p.getVideoInfoByPageUrl(videoUrl)
